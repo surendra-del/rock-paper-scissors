@@ -50,7 +50,26 @@ function playRound(playerSelection, computerSelection) {
     }
 }
 
-const playerSelection = "Rock"
-// const playerSelection = prompt("What do you want to play? (Rock or Paper or Scissors)");
-const computerSelection = getComputerChoice();
-console.log(playRound(playerSelection, computerSelection));
+function game() {
+
+    let count = 0;
+    for(let i=0; i<5; i++) {
+        // const playerSelection = "Rock"
+        const playerSelection = prompt("What do you want to play? (Rock or Paper or Scissors)");
+        const computerSelection = getComputerChoice();
+        const result = playRound(playerSelection, computerSelection);
+        console.log(result);
+        const resultShort = result.slice(4,7)
+        if(resultShort == "Win") count += 1;
+        else if(resultShort == "Los") count -= 1;
+    }
+    if(count > 0){
+        console.log("You Won the game");
+    }else if(count < 0) {
+        console.log("You lost the game");
+    }else {
+        console.log("The game is a tie")
+    }
+}
+
+game();
