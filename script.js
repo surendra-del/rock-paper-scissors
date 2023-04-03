@@ -1,3 +1,28 @@
+let playerScore = 0;
+let compScore = 0;
+let playerSelection;
+let computerSelection;
+
+const player = document.querySelector("#player-score");
+player.textContent = `${playerScore}`;
+
+const computer = document.querySelector("#computer-score");
+computer.textContent = `${compScore}`;
+
+const output = document.querySelector(".info");
+
+const choices = document.querySelectorAll(".choice");
+choices.forEach((choice) => {choice.addEventListener('click', playGame)});
+
+// Creating a button to refresh page
+const body = document.querySelector("body");
+const playAgain = document.createElement("div");
+playAgain.textContent = "Play Again";
+playAgain.classList.add("refresh");
+playAgain.addEventListener('click', ()=>{
+    window.location.reload(true);
+});
+
 function getComputerChoice() {
     let computerNumber = Math.floor(Math.random() * 3) + 1;
     let computerGuess = "";
@@ -16,60 +41,61 @@ function getComputerChoice() {
             break;
     }
     return computerGuess;
-}
+};
 
 function playRound(playerSelection, computerSelection) {
     playerSelection = playerSelection.toLowerCase();
 
     if(playerSelection == "rock") {
         if(computerSelection == "paper") {
+            compScore++;
             return "You Lose! Paper beats Rock"
         }else if(computerSelection == "scissors") {
+            playerScore++;
             return "You Win! Rock beats Scissors"
         }else {
             return "It's a tie"
         }
     }else if(playerSelection == "paper") {
         if(computerSelection == "scissors") {
+            compScore++;
             return "You Lose! Scissors beats Paper"
         }else if(computerSelection == "rock") {
+            playerScore++;
             return "You Win! Paper beats Rock"
         }else {
             return "It's a tie"
         }
     }else if(playerSelection == "scissors") {
         if(computerSelection == "rock") {
+            compScore++;
             return "You Lose! Rock beats Scissors"
         }else if(computerSelection == "paper") {
+            playerScore++;
             return "You Win! Scissors beats Paper"
         }else {
             return "It's a tie"
         }
-    }else {
-        return "Enter any of the three responses (Rock, Paper, Scissors)"
     }
-}
+};
 
-function game() {
+function playGame() {
+    playerSelection = this.id;
+    computerSelection = getComputerChoice();
+    output.textContent = playRound(playerSelection, computerSelection);
+    player.textContent = `${playerScore}`;
+    computer.textContent = `${compScore}`;
 
-    let count = 0;
-    for(let i=0; i<5; i++) {
-        // const playerSelection = "Rock"
-        const playerSelection = prompt("What do you want to play? (Rock or Paper or Scissors)");
-        const computerSelection = getComputerChoice();
-        const result = playRound(playerSelection, computerSelection);
-        console.log(result);
-        const resultShort = result.slice(4,7)
-        if(resultShort == "Win") count += 1;
-        else if(resultShort == "Los") count -= 1;
+    if(playerScore == 5 || compScore == 5) {
+        choices.forEach((choice) => {
+            choice.classList.add("disabled");
+            choice.removeEventListener('click', playGame);
+        });
+        if(playerScore == 5) {
+            output.textContent = "You Won the Game! Congrats";
+        }else if(compScore == 5) {
+            output.textContent = "You Lost the Game! Oops";
+        }
+        body.insertBefore(playAgain, output);
     }
-    if(count > 0){
-        console.log("You Won the game");
-    }else if(count < 0) {
-        console.log("You lost the game");
-    }else {
-        console.log("The game is a tie")
-    }
-}
-
-game();
+};
